@@ -8,6 +8,16 @@ public class Rocket : MonoBehaviour
     [SerializeField] float rcsThrust = 100f;
     [SerializeField] float mainThrust = 100f;
 
+    [SerializeField] float levelLoadDelay = 1f;
+
+    [SerializeField] AudioClip mainEngine;
+    [SerializeField] AudioClip deathNoise;
+    [SerializeField] AudioClip finishNoise;
+
+    [SerializeField] ParticleSystem mainEngineParticles;
+    [SerializeField] ParticleSystem finishParticles;
+    [SerializeField] ParticleSystem deathParticles;
+
     enum State { Alive, Dying, Transcending };
     State state = State.Alive;
 
@@ -23,7 +33,7 @@ public class Rocket : MonoBehaviour
     {
         if (state == State.Alive)
         {
-            Thrust();
+            RespondToThrust();
             Rotate();
         }
     }
@@ -46,21 +56,28 @@ public class Rocket : MonoBehaviour
 
     }
 
-    private void Thrust()
+    private void RespondToThrust()
     {
         if (Input.GetKey(KeyCode.Space))
         {
-            float thrustPerFrame = mainThrust * Time.deltaTime;
-            rigidBody.AddRelativeForce(Vector3.up * thrustPerFrame);
-            if (!audioSource.isPlaying)
-            {
-                audioSource.Play();
-            }
+            Thrust();
         }
         else
         {
             audioSource.Stop();
+            mainEngineParticles.Stop();
         }
+    }
+
+    private void Thrust()
+    {
+        float thrustPerFrame = mainThrust * Time.deltaTime;
+        rigidBody.AddRelativeForce(Vector3.up * thrustPerFrame);
+        if (!audioSource.isPlaying)
+        {
+            audioSource.PlayOneShot(mainEngine);
+        }
+        mainEngineParticles.Play();
     }
 
     void OnCollisionEnter(Collision collision)
@@ -72,11 +89,17 @@ public class Rocket : MonoBehaviour
                 break;
             case "Finish":
                 state = State.Transcending;
-                Invoke("LoadNextScene", 1f);
+                audioSource.Stop();
+                audioSource.PlayOneShot(finishNoise);
+                finishParticles.Play();
+                Invoke("LoadNextScene", levelLoadDelay);
                 break;
             default:
                 state = State.Dying;
-                Invoke("LoadFirstLevel", 1f);
+                audioSource.Stop();
+                audioSource.PlayOneShot(deathNoise);
+                deathParticles.Play();
+                Invoke("LoadFirstLevel", levelLoadDelay);
                 break;
         }
     }
