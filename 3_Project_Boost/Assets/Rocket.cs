@@ -21,6 +21,8 @@ public class Rocket : MonoBehaviour
     enum State { Alive, Dying, Transcending };
     State state = State.Alive;
 
+    bool collisionsEnabled = true;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -36,23 +38,38 @@ public class Rocket : MonoBehaviour
             RespondToThrust();
             Rotate();
         }
+        if (Debug.isDebugBuild)
+        {
+            RespondToDebugKeys();
+        }
+    }
+
+    private void RespondToDebugKeys()
+    {
+        if (Input.GetKeyDown(KeyCode.L)) {
+            LoadNextScene();
+        }
+        else if (Input.GetKeyDown(KeyCode.C)) {
+            collisionsEnabled = !collisionsEnabled;
+        }
     }
 
     private void Rotate()
     {
-        rigidBody.freezeRotation = true;
         float rotationSpeed = rcsThrust * Time.deltaTime;
 
         if (Input.GetKey(KeyCode.A) && !Input.GetKey(KeyCode.D))
         {
+            rigidBody.freezeRotation = true;
             transform.Rotate(Vector3.forward * rotationSpeed);
+            rigidBody.freezeRotation = false;
         }
         else if (!Input.GetKey(KeyCode.A) && Input.GetKey(KeyCode.D))
         {
+            rigidBody.freezeRotation = true;
             transform.Rotate(-Vector3.forward * rotationSpeed);
+            rigidBody.freezeRotation = false;
         }
-
-        rigidBody.freezeRotation = false;
 
     }
 
@@ -65,7 +82,10 @@ public class Rocket : MonoBehaviour
         else
         {
             audioSource.Stop();
-            mainEngineParticles.Stop();
+            if (mainEngineParticles.isPlaying)
+            {
+                mainEngineParticles.Stop();
+            }
         }
     }
 
@@ -76,13 +96,13 @@ public class Rocket : MonoBehaviour
         if (!audioSource.isPlaying)
         {
             audioSource.PlayOneShot(mainEngine);
+            mainEngineParticles.Play();
         }
-        mainEngineParticles.Play();
     }
 
     void OnCollisionEnter(Collision collision)
     {
-        if (state != State.Alive){return;}
+        if (state != State.Alive || !collisionsEnabled) {return;}
 
         switch (collision.gameObject.tag) {
             case "Friendly":
@@ -111,6 +131,11 @@ public class Rocket : MonoBehaviour
 
     private void LoadNextScene()
     {
-        SceneManager.LoadScene(1);
+        int currentSceneIndex = SceneManager.GetActiveScene().buildIndex;
+        if (currentSceneIndex == SceneManager.sceneCountInBuildSettings - 1)
+        {
+            currentSceneIndex = -1;
+        }
+        SceneManager.LoadScene(currentSceneIndex + 1); 
     }
 }
