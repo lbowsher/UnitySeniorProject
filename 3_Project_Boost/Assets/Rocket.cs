@@ -21,6 +21,7 @@ public class Rocket : MonoBehaviour
     enum State { Alive, Dying, Transcending };
     State state = State.Alive;
 
+    bool useDebugKeys = true;
     bool collisionsEnabled = true;
 
     // Start is called before the first frame update
@@ -28,8 +29,8 @@ public class Rocket : MonoBehaviour
     {
         rigidBody = GetComponent<Rigidbody>();
         audioSource = GetComponent<AudioSource>();
+        //useDebugKeys = Debug.isDebugBuild;
     }
-
     // Update is called once per frame
     void Update()
     {
@@ -38,7 +39,7 @@ public class Rocket : MonoBehaviour
             RespondToThrust();
             Rotate();
         }
-        if (Debug.isDebugBuild)
+        if (useDebugKeys)
         {
             RespondToDebugKeys();
         }
@@ -119,7 +120,7 @@ public class Rocket : MonoBehaviour
                 audioSource.Stop();
                 audioSource.PlayOneShot(deathNoise);
                 deathParticles.Play();
-                Invoke("LoadFirstLevel", levelLoadDelay);
+                Invoke("LoadLastLevel", levelLoadDelay);
                 break;
         }
     }
@@ -127,6 +128,11 @@ public class Rocket : MonoBehaviour
     private void LoadFirstLevel()
     {
         SceneManager.LoadScene(0);
+    }
+
+    private void LoadLastLevel()
+    {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
 
     private void LoadNextScene()

@@ -6,21 +6,30 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Scenes/Level 1.unity
+    path: Assets/Scenes/No Obstacles.unity
+    guid: 4dbad680b0a9daa4583ec84896e257f1
+  - enabled: 1
+    path: Assets/Scenes/1 Obstacle.unity
+    guid: e133e8b36ea5e2846b61fb3a487a38e4
+  - enabled: 1
+    path: Assets/Scenes/Rock Gap.unity
+    guid: aba975fea1d7b3847a976cf94ef137e2
+  - enabled: 1
+    path: Assets/Scenes/Over Under.unity
     guid: 9fc0d4010bbf28b4594072e72b8655ab
   - enabled: 1
-    path: Assets/Scenes/Level 2.unity
+    path: Assets/Scenes/Tunnel.unity
     guid: 59ad86cbc639e994d87ddc65d4db16c4
   - enabled: 1
-    path: Assets/Scenes/Level 3.unity
-    guid: 61fa3fac6732dca4093565afaaf3d8c4
-  - enabled: 1
-    path: Assets/Scenes/Level 4.unity
-    guid: e3a790df35d14d942ad291cccb1d58a9
-  - enabled: 1
-    path: Assets/Scenes/Level 5.unity
+    path: Assets/Scenes/Horizontal Bobbing.unity
     guid: 680a4a009e934a04b968ebdc4c4521fc
   - enabled: 1
-    path: Assets/Scenes/Level 6.unity
+    path: Assets/Scenes/Vertical Bobbing.unity
+    guid: e3a790df35d14d942ad291cccb1d58a9
+  - enabled: 1
+    path: Assets/Scenes/Peek-A-Boo.unity
     guid: 3f033bd9c6616444bb23cd4a492b33c5
+  - enabled: 1
+    path: Assets/Scenes/Thread Needle.unity
+    guid: 61fa3fac6732dca4093565afaaf3d8c4
   m_configObjects: {}
